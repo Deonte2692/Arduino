@@ -1,0 +1,62 @@
+int sensorPin = 0;
+int red_light_pin= 11;
+int green_light_pin = 10;
+int blue_light_pin = 9;
+
+void setup()
+{
+  Serial.begin(9600);  //Start the serial connection with the computer
+                       //to view the result open the serial monitor 
+  pinMode(red_light_pin, OUTPUT);
+  pinMode(green_light_pin, OUTPUT);
+  pinMode(blue_light_pin, OUTPUT);
+}
+ 
+void loop()                     // run over and over again
+{
+ //getting the voltage reading from the temperature sensor
+ int reading = analogRead(sensorPin);  
+ 
+ // converting that reading to voltage, for 3.3v arduino use 3.3
+ float voltage = reading * 5.0;
+ voltage /= 1024.0; 
+ 
+ // print out the voltage
+ Serial.print(voltage); Serial.println(" volts");
+ 
+ // now print out the temperature
+ float temperatureC = (voltage - 0.5) * 100 ;  //converting from 10 mv per degree wit 500 mV offset
+                                               //to degrees ((voltage - 500mV) times 100)
+ Serial.print(temperatureC); Serial.println(" degrees C");
+ 
+ // now convert to Fahrenheit
+ float temperatureF = (temperatureC * 9.0 / 5.0) + 32.0;
+ Serial.print(temperatureF); Serial.println(" degrees F");
+
+ if (temperatureF > 80){
+     Serial.print("Too Hot");
+  setColor(0, 255, 0); // red
+ }
+ if (temperatureF <= 78){
+    Serial.print("mild");
+  setColor(0, 102 ,0); // green
+ }
+ if( temperatureF < 80){
+    Serial.print("Cold");
+  setColor(0, 0, 255); // blue 
+ }
+
+ delay(1000);
+ ]
+ void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
+ {
+  #ifdef COMMON_ANODE
+    red = 255 - red;
+    green = 102 - green;
+    blue = 255 - blue;
+  #endif
+  analogWrite(red_light_pin, red_light_value);
+  analogWrite(green_light_pin, green_light_value);
+  analogWrite(blue_light_pin, blue_light_value);
+}
+
